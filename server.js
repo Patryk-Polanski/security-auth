@@ -3,6 +3,8 @@ const https = require("https");
 const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
+const passport = require("passport");
+const { Strategy } = require("passport-google-oauth20");
 
 require("dotenv").config();
 
@@ -12,9 +14,22 @@ const config = {
   CLIENT_SECRET: process.env.CLIENT_SECRET,
 };
 
+const AUTH_OPTIONS = {
+  callbackURL: "/auth/google/callback",
+  clientID: config.CLIENT_ID,
+  clientSecret: config.CLIENT_SECRET,
+};
+
+function verifyCallback(accessToken, refreshToken, profile, done) {
+  console.log("Google profile", profile);
+}
+
+passport.use(new Strategy(AUTH_OPTIONS, verifyCallback));
+
 const app = express();
 
 app.use(helmet());
+app.use(passport.initialize());
 
 function checkLoggedIn(req, res, next) {
   const isLoggedIn = true; // TODO: make this dynamic
