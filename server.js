@@ -10,7 +10,23 @@ const app = express();
 
 app.use(helmet());
 
-app.get("/", (req, res) => {
+function checkLoggedIn(req, res, next) {
+  const isLoggedIn = true; // TODO: make this dynamic
+  if (!isLoggedIn) {
+    res.status(401).json({
+      error: "You must log in!",
+    });
+  }
+  next();
+}
+
+app.get("/auth/google", (req, res) => {});
+
+app.get("/auth/google/callback", (req, res) => {});
+
+app.get("/auth/logout", (req, res) => {});
+
+app.get("/", checkLoggedIn, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
