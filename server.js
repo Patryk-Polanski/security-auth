@@ -59,7 +59,8 @@ app.use(passport.initialize());
 app.use(passport.session()); // authenticate the session that is being sent to the server using the above keys and sets the value of the user property to contain the user's identity. This middleware will call the deserializeUser fn
 
 function checkLoggedIn(req, res, next) {
-  const isLoggedIn = true; // TODO: make this dynamic
+  console.log("current user is: ", req.user);
+  const isLoggedIn = req.isAuthenticated() && req.user;
   if (!isLoggedIn) {
     res.status(401).json({
       error: "You must log in!",
@@ -89,11 +90,11 @@ app.get(
 
 app.get("/auth/logout", (req, res) => {});
 
-app.get("/", checkLoggedIn, (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("/secret", (req, res) => {
+app.get("/secret", checkLoggedIn, (req, res) => {
   return res.send("Your personal secret value is 42!");
 });
 
