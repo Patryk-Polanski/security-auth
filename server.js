@@ -62,7 +62,7 @@ function checkLoggedIn(req, res, next) {
   console.log("current user is: ", req.user);
   const isLoggedIn = req.isAuthenticated() && req.user;
   if (!isLoggedIn) {
-    res.status(401).json({
+    return res.status(401).json({
       error: "You must log in!",
     });
   }
