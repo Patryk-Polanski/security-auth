@@ -30,6 +30,20 @@ function verifyCallback(accessToken, refreshToken, profile, done) {
 
 passport.use(new Strategy(AUTH_OPTIONS, verifyCallback));
 
+// save the session to the cookie
+passport.serializeUser((user, done) => {
+  // null means no errors
+  done(null, user); // set user as the value of the cookie
+});
+
+// read session from the cookie
+// parsed cookie session will expose req.user
+passport.deserializeUser((obj, done) => {
+  done(null, obj);
+});
+
+passport.deserializeUser;
+
 const app = express();
 
 app.use(helmet());
@@ -41,6 +55,7 @@ app.use(
   })
 );
 app.use(passport.initialize());
+app.use(passport.session()); // authenticate the session that is being sent to the server using the above keys and sets the value of the user property to contain the user's identity. This middleware will call the deserializeUser fn
 
 function checkLoggedIn(req, res, next) {
   const isLoggedIn = true; // TODO: make this dynamic
@@ -64,7 +79,7 @@ app.get(
   passport.authenticate("google", {
     failureRedirect: "/failure",
     successRedirect: "/",
-    session: false,
+    session: true,
   }),
   (req, res) => {
     console.log("Google calles us back");
