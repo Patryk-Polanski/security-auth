@@ -33,13 +33,14 @@ passport.use(new Strategy(AUTH_OPTIONS, verifyCallback));
 // save the session to the cookie
 passport.serializeUser((user, done) => {
   // null means no errors
-  done(null, user); // set user as the value of the cookie
+  done(null, user.id); // set user as the value of the cookie
 });
 
 // read session from the cookie
 // parsed cookie session will expose req.user
-passport.deserializeUser((obj, done) => {
-  done(null, obj);
+passport.deserializeUser((id, done) => {
+  // with a server side session, we would do db lookups here to identify the user and attach some data to the req.user
+  done(null, id);
 });
 
 passport.deserializeUser;
